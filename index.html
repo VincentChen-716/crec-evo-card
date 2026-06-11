@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>晶振进化卡 · 晶宝股份</title>
+<style>
+  :root {
+    --bg: #080d1a;
+    --card-bg: #0d1528;
+    --gold: #d4a853;
+    --gold-light: #f0d68a;
+    --blue: #2a6df4;
+    --blue-glow: #4d8cff;
+    --text: #e8ecf3;
+    --text-dim: #8899b4;
+    --border: rgba(212,168,83,0.25);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(ellipse at 50% 0%, rgba(42,109,244,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(212,168,83,0.06) 0%, transparent 50%);
+  }
+
+  /* ── Grid pattern bg ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .container {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 420px;
+    padding: 24px 16px 40px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+
+  /* ── Header ── */
+  .header {
+    text-align: center; margin-bottom: 28px;
+  }
+  .brand-logo {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 600; color: var(--text-dim);
+    letter-spacing: 2px; margin-bottom: 6px;
+  }
+  .brand-logo .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 8px var(--gold);
+  }
+  .header h1 {
+    font-size: 26px; font-weight: 800; letter-spacing: 1px;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold) 40%, var(--blue-glow));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header .sub {
+    font-size: 12px; color: var(--text-dim); margin-top: 4px;
+  }
+
+  /* ── Form ── */
+  .form-card {
+    width: 100%; background: var(--card-bg);
+    border: 1px solid var(--border); border-radius: 16px;
+    padding: 24px 20px; margin-bottom: 24px;
+  }
+  .form-card label {
+    display: block; font-size: 13px; font-weight: 600;
+    color: var(--text-dim); margin-bottom: 6px;
+  }
+  .form-card input {
+    width: 100%; padding: 12px 16px; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04); color: var(--text);
+    font-size: 16px; font-family: inherit; outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-card input:focus { border-color: var(--blue); }
+  .form-card input::placeholder { color: rgba(255,255,255,0.2); }
+
+  .btn-generate {
+    width: 100%; margin-top: 16px; padding: 14px;
+    border: none; border-radius: 12px;
+    background: linear-gradient(135deg, var(--blue), #1a54cc);
+    color: #fff; font-size: 16px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+    transition: all 0.2s; letter-spacing: 0.5px;
+  }
+  .btn-generate:active { transform: scale(0.97); opacity: 0.9; }
+
+  /* ── Card ── */
+  .card-wrapper {
+    width: 100%; perspective: 1000px; display: none;
+  }
+  .card-wrapper.visible { display: block; }
+
+  .evo-card {
+    width: 100%; aspect-ratio: 3/4;
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 28px 24px 20px;
+    display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+    transform: rotateY(8deg) rotateX(3deg);
+    animation: cardReveal 0.8s cubic-bezier(0.23,1,0.32,1) forwards;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5),
+                0 0 40px rgba(42,109,244,0.08),
+                inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+  @keyframes cardReveal {
+    0% { transform: rotateY(15deg) rotateX(8deg) translateY(40px); opacity: 0; }
+    60% { transform: rotateY(0deg) rotateX(0deg) translateY(-4px); opacity: 1; }
+    100% { transform: rotateY(0deg) rotateX(0deg) translateY(0); opacity: 1; }
+  }
+
+  /* Card decorative elements */
+  .card-shine {
+    position: absolute;
+    top: -40%; left: -20%; width: 140%; height: 80%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(42,109,244,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .card-holo {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(212,168,83,0.03) 30%, rgba(42,109,244,0.04) 50%, transparent 100%);
+    pointer-events: none;
+  }
+  .card-grid {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+  }
+
+  .card-top { position: relative; z-index: 1; text-align: center; }
+  .rarity-badge {
+    display: inline-block; padding: 3px 14px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    border: 1px solid;
+  }
+  .rarity-ssr { color: #f0d68a; border-color: rgba(240,214,138,0.4); background: rgba(240,214,138,0.08); }
+  .rarity-sr { color: #c084fc; border-color: rgba(192,132,252,0.4); background: rgba(192,132,252,0.08); }
+  .rarity-r { color: #60a5fa; border-color: rgba(96,165,250,0.4); background: rgba(96,165,250,0.08); }
+
+  .card-icon {
+    font-size: 56px; margin: 16px 0 8px; line-height: 1;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .card-type {
+    font-size: 20px; font-weight: 800; letter-spacing: 1px;
+    background: linear-gradient(135deg, #fff, var(--gold-light));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .card-type-en {
+    font-size: 11px; color: var(--text-dim); letter-spacing: 2px;
+    margin-top: 2px;
+  }
+
+  .card-body { position: relative; z-index: 1; flex: 1; padding-top: 18px; }
+  .spec-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .spec-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+  .spec-value { font-size: 14px; font-weight: 700; color: var(--text); text-align: right; }
+
+  .card-footer {
+    position: relative; z-index: 1;
+    text-align: center; padding-top: 16px;
+  }
+  .card-footer .name {
+    font-size: 18px; font-weight: 800; letter-spacing: 1px;
+    color: var(--gold-light);
+  }
+  .card-footer .event {
+    font-size: 10px; color: var(--text-dim); margin-top: 4px;
+    letter-spacing: 1px;
+  }
+  .card-no {
+    position: absolute; right: 24px; bottom: 22px;
+    font-size: 9px; color: rgba(255,255,255,0.15);
+    letter-spacing: 2px; z-index: 1;
+  }
+
+  /* ── Actions ── */
+  .actions {
+    width: 100%; display: none; gap: 12px; margin-top: 20px;
+  }
+  .actions.visible { display: flex; }
+
+  .btn-action {
+    flex: 1; padding: 12px; border-radius: 12px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    font-family: inherit; text-align: center;
+    transition: all 0.15s; border: 1px solid;
+  }
+  .btn-save {
+    background: var(--blue); border-color: var(--blue);
+    color: #fff;
+  }
+  .btn-save:active { opacity: 0.85; }
+  .btn-retry {
+    background: transparent; border-color: rgba(255,255,255,0.15);
+    color: var(--text-dim);
+  }
+  .btn-retry:active { background: rgba(255,255,255,0.04); }
+
+  .tip {
+    margin-top: 12px; font-size: 11px; color: var(--text-dim);
+    text-align: center; display: none;
+  }
+  .tip.visible { display: block; }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%);
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px 24px;
+    font-size: 14px; color: var(--gold-light);
+    z-index: 999; opacity: 0; transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+
+  /* ── Footer ── */
+  .page-footer {
+    margin-top: 32px; font-size: 10px; color: rgba(255,255,255,0.1);
+    letter-spacing: 2px; text-align: center;
+  }
+
+  @media (max-width: 380px) {
+    .evo-card { padding: 20px 16px 16px; }
+    .card-icon { font-size: 44px; }
+    .card-type { font-size: 17px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="brand-logo"><span class="dot"></span> CREC · 晶宝股份</div>
+    <h1>晶振进化卡</h1>
+    <div class="sub">Electronica China 2026 · 专属限定</div>
+  </div>
+
+  <!-- Input -->
+  <div class="form-card" id="formCard">
+    <label>你的名字</label>
+    <input type="text" id="nameInput" placeholder="输入姓名，生成专属卡片" maxlength="12">
+    <button class="btn-generate" onclick="generate()">✨ 生成我的进化卡</button>
+  </div>
+
+  <!-- Card -->
+  <div class="card-wrapper" id="cardWrapper">
+    <div class="evo-card" id="evoCard">
+      <div class="card-shine"></div>
+      <div class="card-holo"></div>
+      <div class="card-grid"></div>
+
+      <div class="card-top">
+        <div class="rarity-badge" id="rarityBadge">SSR</div>
+        <div class="card-icon" id="cardIcon">💎</div>
+        <div class="card-type" id="cardType">TCXO 温补大师</div>
+        <div class="card-type-en" id="cardTypeEn">Temperature Compensated</div>
+      </div>
+
+      <div class="card-body" id="cardBody"></div>
+
+      <div class="card-footer">
+        <div class="name" id="cardName">---</div>
+        <div class="event">Electronica China 2026 · 晶宝股份</div>
+      </div>
+      <div class="card-no" id="cardNo">NO.001</div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions" id="actionsBar">
+    <button class="btn-retry" onclick="retry()">🔄 再试一次</button>
+    <button class="btn-save" onclick="saveCard()">📸 保存卡片</button>
+  </div>
+  <div class="tip" id="shareTip">长按图片可保存到相册，分享给朋友</div>
+
+  <div class="page-footer">CREC ELECTRONICS · SINCE 1990</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+// ── Card data ──
+const CARD_TYPES = [
+  {
+    id: 'tcxo', name: 'TCXO 温补大师', en: 'Temperature Compensated',
+    icon: '💎', rarity: 'SSR', rarityClass: 'rarity-ssr',
+    specs: [
+      { label: '频率稳定度', value: '±0.5 ppm' },
+      { label: '温度范围', value: '-40 ~ +105°C' },
+      { label: '相位噪声', value: '-155 dBc/Hz' },
+      { label: '特性技能', value: '全温域自动补偿' },
+    ]
+  },
+  {
+    id: 'ocxo', name: 'OCXO 恒温王者', en: 'Oven Controlled',
+    icon: '👑', rarity: 'SSR', rarityClass: 'rarity-ssr',
+    specs: [
+      { label: '频率稳定度', value: '±0.01 ppb' },
+      { label: '恒温槽温', value: '+85°C 精密控温' },
+      { label: '老化率', value: '< 0.1 ppb/天' },
+      { label: '特性技能', value: '基准级时钟源' },
+    ]
+  },
+  {
+    id: 'tsx', name: 'TSX 车规先锋', en: 'Automotive Grade',
+    icon: '🚗', rarity: 'SSR', rarityClass: 'rarity-ssr',
+    specs: [
+      { label: '认证标准', value: 'AEC-Q200' },
+      { label: '工作温度', value: '-40 ~ +125°C' },
+      { label: '抗冲击', value: '10,000G' },
+      { label: '特性技能', value: 'ADAS/域控专用' },
+    ]
+  },
+  {
+    id: 'vcxo', name: 'VCXO 压控达人', en: 'Voltage Controlled',
+    icon: '🎛️', rarity: 'SR', rarityClass: 'rarity-sr',
+    specs: [
+      { label: '牵引范围', value: '±200 ppm' },
+      { label: '线性度', value: '< 5%' },
+      { label: '调谐电压', value: '0.5 ~ 4.5V' },
+      { label: '特性技能', value: '精准频率微调' },
+    ]
+  },
+  {
+    id: 'spxo', name: 'SPXO 基频专家', en: 'Simple Packaged',
+    icon: '⚡', rarity: 'SR', rarityClass: 'rarity-sr',
+    specs: [
+      { label: '频率范围', value: '1 ~ 200 MHz' },
+      { label: '封装', value: '2016 / 2520' },
+      { label: '功耗', value: '< 10 mW' },
+      { label: '特性技能', value: '高性价比基石' },
+    ]
+  },
+  {
+    id: 'khz', name: '32.768K 时基守护者', en: 'Tuning Fork',
+    icon: '⌚', rarity: 'R', rarityClass: 'rarity-r',
+    specs: [
+      { label: '标称频率', value: '32.768 kHz' },
+      { label: '频率偏差', value: '±20 ppm' },
+      { label: '封装', value: '3215 / 2012' },
+      { label: '特性技能', value: '万物时钟之心' },
+    ]
+  }
+];
+
+function generate() {
+  const name = document.getElementById('nameInput').value.trim();
+  if (!name) {
+    showToast('请先输入你的名字');
+    document.getElementById('nameInput').focus();
+    return;
+  }
+
+  const type = CARD_TYPES[Math.floor(Math.random() * CARD_TYPES.length)];
+
+  // Update card content
+  document.getElementById('rarityBadge').textContent = type.rarity;
+  document.getElementById('rarityBadge').className = 'rarity-badge ' + type.rarityClass;
+  document.getElementById('cardIcon').textContent = type.icon;
+  document.getElementById('cardType').textContent = type.name;
+  document.getElementById('cardTypeEn').textContent = type.en;
+  document.getElementById('cardName').textContent = name;
+
+  // Card number
+  const no = 'NO.' + String(Math.floor(Math.random() * 900) + 100).padStart(3,'0');
+  document.getElementById('cardNo').textContent = no;
+
+  // Specs
+  let specHtml = '';
+  type.specs.forEach(s => {
+    specHtml += `<div class="spec-row">
+      <span class="spec-label">${s.label}</span>
+      <span class="spec-value">${s.value}</span>
+    </div>`;
+  });
+  document.getElementById('cardBody').innerHTML = specHtml;
+
+  // Show card
+  const wrapper = document.getElementById('cardWrapper');
+  const card = document.getElementById('evoCard');
+
+  wrapper.classList.remove('visible');
+  void wrapper.offsetWidth;
+
+  // Reset animation
+  card.style.animation = 'none';
+  void card.offsetWidth;
+  card.style.animation = 'cardReveal 0.8s cubic-bezier(0.23,1,0.32,1) forwards';
+
+  wrapper.classList.add('visible');
+  document.getElementById('actionsBar').classList.add('visible');
+  document.getElementById('formCard').style.display = 'none';
+
+  // Scroll card into view
+  setTimeout(() => {
+    wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 100);
+}
+
+function retry() {
+  document.getElementById('formCard').style.display = 'block';
+  document.getElementById('cardWrapper').classList.remove('visible');
+  document.getElementById('actionsBar').classList.remove('visible');
+  document.getElementById('shareTip').classList.remove('visible');
+  document.getElementById('nameInput').value = '';
+  document.getElementById('nameInput').focus();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function saveCard() {
+  const card = document.getElementById('evoCard');
+  const btn = document.querySelector('.btn-save');
+
+  btn.textContent = '⏳ 生成中...';
+  btn.style.pointerEvents = 'none';
+
+  try {
+    const canvas = await html2canvas(card, {
+      scale: 2,
+      backgroundColor: '#0d1528',
+      useCORS: true,
+      logging: false,
+    });
+
+    const link = document.createElement('a');
+    link.download = '晶振进化卡_' + document.getElementById('cardName').textContent + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+
+    document.getElementById('shareTip').classList.add('visible');
+    btn.textContent = '📸 保存卡片';
+  } catch(e) {
+    // Fallback: open in new tab
+    const canvas = await html2canvas(card, { scale: 2, backgroundColor: '#0d1528' });
+    const w = window.open('');
+    w.document.write('<img src="' + canvas.toDataURL() + '" style="width:100%">');
+    w.document.title = '长按保存图片';
+    showToast('请长按图片保存');
+  }
+
+  btn.style.pointerEvents = 'auto';
+  btn.textContent = '📸 保存卡片';
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// Enter key to generate
+document.getElementById('nameInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') generate();
+});
+</script>
+</body>
+</html>
